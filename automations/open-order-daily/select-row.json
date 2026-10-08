@@ -1,0 +1,11 @@
+{
+  "type": "TableRow",
+  "cells": [
+    { "type": "TableCell", "items": [ { "type": "TextBlock", "text": "@{item()?['DimCustomer[GLDescription]']}", "wrap": true } ] },
+    { "type": "TableCell", "items": [ { "type": "TextBlock", "text": "@{formatNumber(coalesce(item()?['[OpenAmt]'], 0), 'C0', 'en-US')}", "horizontalAlignment": "Right" } ] },
+    { "type": "TableCell", "items": [ { "type": "TextBlock", "text": "@{formatNumber(coalesce(item()?['[PastDue]'], 0), 'C0', 'en-US')}", "horizontalAlignment": "Right", "color": "Attention" } ] },
+    { "type": "TableCell", "items": [ { "type": "TextBlock", "text": "@{formatNumber(coalesce(item()?['[DueToday]'], 0), 'C0', 'en-US')}", "horizontalAlignment": "Right" } ] },
+    { "type": "TableCell", "items": [ { "type": "TextBlock", "text": "@{formatNumber(coalesce(item()?['[DueThisWeek]'], 0), 'C0', 'en-US')}", "horizontalAlignment": "Right" } ] },
+    { "type": "TableCell", "items": [ { "type": "TextBlock", "text": "@{formatNumber(coalesce(item()?['[FillPct]'], 0), 'P0', 'en-US')}", "horizontalAlignment": "Right" } ] }
+  ]
+}

@@ -1,0 +1,20 @@
+// Open orders by channel: DatasetSilver (workspace: LRDist Data)
+// Same logic as the dashboard's live "ooSum" / "open" queries.
+// TODAY() is UTC in the Power BI service; at 9:30 AM ET that is the same calendar date.
+DEFINE
+    VAR T = TODAY()
+    VAR WkEnd = T + ( 5 - WEEKDAY ( T, 2 ) )   // through Friday
+EVALUATE
+SUMMARIZECOLUMNS (
+    DimCustomer[GLDescription],
+    FILTER ( ALL ( FactOrderLine[IsOpen] ), FactOrderLine[IsOpen] = TRUE () ),
+    FILTER ( ALL ( DimCustomer[CustomerNumber] ), DimCustomer[CustomerNumber] <> "GRIDPO" ),
+    "OpenAmt", [OrderAmount(Open)],
+    "PickedAmt", [OrderPickAmount],
+    "FillPct", DIVIDE ( [OrderPickAmount], [OrderAmount(Open)] ),
+    "PastDue", CALCULATE ( [OrderAmount(Open)], FactOrderHeader[ShipByDate] < T ),
+    "DueToday", CALCULATE ( [OrderAmount(Open)], FactOrderHeader[ShipByDate] = T ),
+    "DueThisWeek", CALCULATE ( [OrderAmount(Open)], FactOrderHeader[ShipByDate] > T, FactOrderHeader[ShipByDate] <= WkEnd ),
+    "Orders", CALCULATE ( DISTINCTCOUNT ( FactOrderHeader[OrderNumber] ) )
+)
+ORDER BY [OpenAmt] DESC

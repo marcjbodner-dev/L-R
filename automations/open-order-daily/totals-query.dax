@@ -1,0 +1,18 @@
+// Open-order totals (one row): DatasetSilver (workspace: LRDist Data)
+DEFINE
+    VAR T = TODAY()
+    VAR WkEnd = T + ( 5 - WEEKDAY ( T, 2 ) )
+EVALUATE
+CALCULATETABLE (
+    ROW (
+        "OpenAmt", [OrderAmount(Open)],
+        "PickedAmt", [OrderPickAmount],
+        "FillPct", DIVIDE ( [OrderPickAmount], [OrderAmount(Open)] ),
+        "PastDue", CALCULATE ( [OrderAmount(Open)], FactOrderHeader[ShipByDate] < T ),
+        "DueToday", CALCULATE ( [OrderAmount(Open)], FactOrderHeader[ShipByDate] = T ),
+        "DueThisWeek", CALCULATE ( [OrderAmount(Open)], FactOrderHeader[ShipByDate] > T, FactOrderHeader[ShipByDate] <= WkEnd ),
+        "Orders", DISTINCTCOUNT ( FactOrderHeader[OrderNumber] )
+    ),
+    FactOrderLine[IsOpen] = TRUE (),
+    DimCustomer[CustomerNumber] <> "GRIDPO"
+)

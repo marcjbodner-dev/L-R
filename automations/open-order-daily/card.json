@@ -1,0 +1,30 @@
+{
+  "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+  "type": "AdaptiveCard",
+  "version": "1.5",
+  "msteams": { "width": "Full" },
+  "body": [
+    { "type": "TextBlock", "text": "Open-order analysis · @{convertFromUtc(utcNow(), 'Eastern Standard Time', 'ddd M/d h:mm tt')} ET", "weight": "Bolder", "size": "Large", "wrap": true },
+    { "type": "TextBlock", "text": "Preliminary: pulled before 10 AM ET, so west-coast EDI orders may not be in the queue yet.", "isSubtle": true, "wrap": true, "spacing": "None" },
+    {
+      "type": "ColumnSet",
+      "columns": [
+        { "type": "Column", "items": [ { "type": "TextBlock", "text": "Open orders", "isSubtle": true }, { "type": "TextBlock", "text": "@{formatNumber(coalesce(first(body('Run_totals_query')?['firstTableRows'])?['[OpenAmt]'], 0), 'C0', 'en-US')}", "size": "ExtraLarge", "weight": "Bolder", "spacing": "None" }, { "type": "TextBlock", "text": "@{formatNumber(coalesce(first(body('Run_totals_query')?['firstTableRows'])?['[Orders]'], 0), 'N0', 'en-US')} orders", "isSubtle": true, "spacing": "None" } ] },
+        { "type": "Column", "items": [ { "type": "TextBlock", "text": "Past due", "isSubtle": true }, { "type": "TextBlock", "text": "@{formatNumber(coalesce(first(body('Run_totals_query')?['firstTableRows'])?['[PastDue]'], 0), 'C0', 'en-US')}", "size": "ExtraLarge", "weight": "Bolder", "color": "Attention", "spacing": "None" } ] },
+        { "type": "Column", "items": [ { "type": "TextBlock", "text": "Due today", "isSubtle": true }, { "type": "TextBlock", "text": "@{formatNumber(coalesce(first(body('Run_totals_query')?['firstTableRows'])?['[DueToday]'], 0), 'C0', 'en-US')}", "size": "ExtraLarge", "weight": "Bolder", "spacing": "None" } ] },
+        { "type": "Column", "items": [ { "type": "TextBlock", "text": "Picked / fill", "isSubtle": true }, { "type": "TextBlock", "text": "@{formatNumber(coalesce(first(body('Run_totals_query')?['firstTableRows'])?['[FillPct]'], 0), 'P0', 'en-US')}", "size": "ExtraLarge", "weight": "Bolder", "spacing": "None" }, { "type": "TextBlock", "text": "@{formatNumber(coalesce(first(body('Run_totals_query')?['firstTableRows'])?['[PickedAmt]'], 0), 'C0', 'en-US')} picked", "isSubtle": true, "spacing": "None" } ] }
+      ]
+    },
+    { "type": "TextBlock", "text": "By channel", "weight": "Bolder", "spacing": "Large" },
+    {
+      "type": "Table",
+      "firstRowAsHeaders": true,
+      "showGridLines": false,
+      "columns": [ { "width": 3 }, { "width": 2 }, { "width": 2 }, { "width": 2 }, { "width": 2 }, { "width": 1 } ],
+      "rows": @{outputs('Compose_table_rows')}
+    }
+  ],
+  "actions": [
+    { "type": "Action.OpenUrl", "title": "Open dashboard", "url": "https://claude.ai/artifact/XRoZK7evZTQkkqXepixC9c" }
+  ]
+}
