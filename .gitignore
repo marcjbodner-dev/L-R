@@ -1,0 +1,6 @@
+# Data-filled artifact exports must never land in this public repo
+*.data.html
+artifacts/*-full.html
+data/
+*.csv
+*.xlsx
